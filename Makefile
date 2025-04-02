@@ -55,6 +55,3 @@ clean:
 	rm -rf $(OBJ_DIR) $(KERNEL_DIR) $(MYOS_ISO)
 
 .PHONY: all clean run run-iso run-bin
-
-# docker cp f0f6c84c3eb4:/root/kernel/myos.iso /home/vmmon/Desktop/KFS-1/kernel/
-# docker cp f0f6c84c3eb4:/root/bin/myos.bin /home/vmmon/Desktop/KFS-1/kernel/
