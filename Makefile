@@ -1,9 +1,8 @@
 TARGET = i686-elf
 
-BIN_DIR = bin
 OBJ_DIR = obj
 SRC_DIR = src
-ISO_DIR = iso
+KERNEL_DIR = kernel
 
 BOOT_SRC = $(SRC_DIR)/boot.s
 KERNEL_SRC = $(SRC_DIR)/kernel.c
@@ -13,8 +12,8 @@ GRUB_CFG = grub.cfg
 MYOS_ISO = myos.iso
 MYOS_BIN = myos.bin
 
-KERNEL_BIN = $(BIN_DIR)/$(MYOS_BIN)
-KERNEL_ISO = $(ISO_DIR)/$(MYOS_ISO)
+KERNEL_BIN = $(KERNEL_DIR)/$(MYOS_BIN)
+KERNEL_ISO = $(KERNEL_DIR)/$(MYOS_ISO)
 
 CC = $(HOME)/opt/cross/bin/$(TARGET)-gcc
 AS = $(HOME)/opt/cross/bin/$(TARGET)-as
@@ -34,16 +33,16 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.s | $(OBJ_DIR)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(OBJS) $(LINKER_SCRIPT) | $(BIN_DIR)
+$(KERNEL_BIN): $(OBJS) $(LINKER_SCRIPT)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) -lgcc
 
-$(KERNEL_ISO): $(KERNEL_BIN) $(GRUB_CFG) | $(ISO_DIR)
-	mkdir -p $(ISO_DIR)/boot/grub
-	cp $(KERNEL_BIN) $(ISO_DIR)/boot/
-	cp $(GRUB_CFG) $(ISO_DIR)/boot/grub/
-	grub-mkrescue --compress=xz -o $@ $(ISO_DIR)
+$(KERNEL_ISO): $(KERNEL_BIN) $(GRUB_CFG) | $(KERNEL_DIR)
+	mkdir -p $(KERNEL_DIR)/boot/grub
+	cp $(KERNEL_BIN) $(KERNEL_DIR)/boot/
+	cp $(GRUB_CFG) $(KERNEL_DIR)/boot/grub/
+	grub-mkrescue --compress=xz -o $@ $(KERNEL_DIR)
 
-$(BIN_DIR) $(OBJ_DIR) $(ISO_DIR):
+$(OBJ_DIR) $(KERNEL_DIR):
 	mkdir -p $@
 
 run-bin: $(KERNEL_BIN)
@@ -53,6 +52,9 @@ run-iso: $(KERNEL_ISO)
 	qemu-system-i386 $(QEMU_FLAGS) -cdrom $<
 
 clean:
-	rm -rf $(BIN_DIR) $(OBJ_DIR) $(ISO_DIR) $(MYOS_ISO)
+	rm -rf $(OBJ_DIR) $(KERNEL_DIR) $(MYOS_ISO)
 
-.PHONY: all clean run run-iso
+.PHONY: all clean run run-iso run-bin
+
+# docker cp f0f6c84c3eb4:/root/kernel/myos.iso /home/vmmon/Desktop/KFS-1/kernel/
+# docker cp f0f6c84c3eb4:/root/bin/myos.bin /home/vmmon/Desktop/KFS-1/kernel/
