@@ -33,7 +33,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.s | $(OBJ_DIR)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(OBJS) $(LINKER_SCRIPT)
+$(KERNEL_BIN): $(OBJS) $(LINKER_SCRIPT) | $(KERNEL_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) -lgcc
 
 $(KERNEL_ISO): $(KERNEL_BIN) $(GRUB_CFG) | $(KERNEL_DIR)
