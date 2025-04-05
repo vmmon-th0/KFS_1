@@ -42,6 +42,3 @@ COPY Makefile $HOME/
 RUN cd $HOME && make all
 
 CMD ["/bin/bash"]
-
-# docker cp [container]:/root/kernel/myos.iso /home/[user]/kernel/
-# docker cp [container]:/root/kernel/myos.bin /home/[user]/kernel/
